@@ -123,6 +123,7 @@ GPtrArray *hy_goal_list_reinstalls(HyGoal goal, GError **error);
 GPtrArray *hy_goal_list_unneeded(HyGoal goal, GError **error);
 GPtrArray *hy_goal_list_upgrades(HyGoal goal, GError **error);
 GPtrArray *hy_goal_list_downgrades(HyGoal goal, GError **error);
+GPtrArray *hy_goal_list_whatrequires_package(HyGoal goal, DnfPackage *pkg);
 GPtrArray *hy_goal_list_obsoleted_by_package(HyGoal goal, DnfPackage *pkg);
 int hy_goal_get_reason(HyGoal goal, DnfPackage *pkg);
 GPtrArray *hy_goal_get_solution(HyGoal goal, guint problem_id);

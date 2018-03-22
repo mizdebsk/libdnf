@@ -660,6 +660,19 @@ list_upgrades(_GoalObject *self, PyObject *unused)
 }
 
 static PyObject *
+whatrequires_package(_GoalObject *self, PyObject *pkg)
+{
+    DnfPackage *cpkg = packageFromPyObject(pkg);
+
+    if (cpkg == NULL)
+        return NULL;
+    GPtrArray *plist = hy_goal_list_whatrequires_package(self->goal, cpkg);
+    PyObject *list = packagelist_to_pylist(plist, self->sack);
+    g_ptr_array_unref(plist);
+    return list;
+}
+
+static PyObject *
 obsoleted_by_package(_GoalObject *self, PyObject *pkg)
 {
     DnfPackage *cpkg = packageFromPyObject(pkg);
@@ -773,8 +786,8 @@ static struct PyMethodDef goal_methods[] = {
     {"list_unneeded",        (PyCFunction)list_unneeded,        METH_NOARGS,        NULL},
     {"list_downgrades",        (PyCFunction)list_downgrades,        METH_NOARGS,        NULL},
     {"list_upgrades",        (PyCFunction)list_upgrades,        METH_NOARGS,        NULL},
-    {"obsoleted_by_package",(PyCFunction)obsoleted_by_package,
-     METH_O, NULL},
+    {"whatrequires_package",(PyCFunction)whatrequires_package,     METH_O, NULL},
+    {"obsoleted_by_package",(PyCFunction)obsoleted_by_package,     METH_O, NULL},
     {"get_reason",        (PyCFunction)get_reason,        METH_O,                NULL},
     {"get_solution",      (PyCFunction)get_solution,      METH_O,                NULL},
     {NULL}                      /* sentinel */

@@ -1412,6 +1412,27 @@ hy_goal_list_downgrades(HyGoal goal, GError **error)
 }
 
 GPtrArray *
+hy_goal_list_whatrequires_package(HyGoal goal, DnfPackage *pkg)
+{
+    Id rid;
+    Queue q;
+    int n, i;
+    GPtrArray *plist;
+    plist = hy_packagelist_create();
+    queue_init(&q);
+    solver_describe_decision(goal->solv, dnf_package_get_id(pkg), &rid);
+    n = solver_allruleinfos(goal->solv, rid, &q);
+    for (i = 0; i < n; i++) {
+      if (q.elements[4*i] == SOLVER_RULE_PKG_REQUIRES) {
+	g_ptr_array_add(plist, dnf_package_new(goal->sack, q.elements[4*i+1]));
+      }
+    }
+    queue_free(&q);
+
+    return plist;
+}
+
+GPtrArray *
 hy_goal_list_obsoleted_by_package(HyGoal goal, DnfPackage *pkg)
 {
     DnfSack *sack = goal->sack;
